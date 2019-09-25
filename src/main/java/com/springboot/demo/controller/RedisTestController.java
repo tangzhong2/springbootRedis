@@ -1,18 +1,19 @@
 package com.springboot.demo.controller;
 
-import com.springboot.demo.base.controller.BaseController;
-import com.springboot.demo.base.utils.RedisConstants;
-import com.springboot.demo.base.utils.RedisUtil;
-import com.springboot.demo.base.utils.StateParameter;
-import com.springboot.demo.entity.User;
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
+import com.springboot.demo.base.controller.BaseController;
+import com.springboot.demo.base.utils.RedisConstants;
+import com.springboot.demo.base.utils.RedisUtil;
+import com.springboot.demo.base.utils.StateParameter;
+import com.springboot.demo.dao.UserDao;
+import com.springboot.demo.entity.User;
 
 /**
  * @ClassName: RedisTestController
@@ -26,6 +27,9 @@ public class RedisTestController extends BaseController{
 
     @Autowired
     RedisUtil redisUtil;
+    
+    @Autowired
+    private UserDao userDao;
 
     @RequestMapping(value="/list")
     public String view(HttpServletRequest request, String name){
@@ -64,6 +68,7 @@ public class RedisTestController extends BaseController{
             user.setAge(28);
             user.setId(getUuid());
             redisUtil.set("user",user, RedisConstants.datebase1);
+            userDao.save(user);
             User res = (User)redisUtil.get("user",RedisConstants.datebase1);
             logger.info("res="+res.toString());
             logger.info("读取redis成功");

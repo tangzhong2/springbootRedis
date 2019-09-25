@@ -1,8 +1,8 @@
 package com.springboot.demo.base.config;
 
-import com.springboot.demo.base.utils.FastJson2JsonRedisSerializer;
-import com.springboot.demo.base.utils.RedisUtil;
-import lombok.extern.slf4j.Slf4j;
+import java.time.Duration;
+
+import org.hibernate.annotations.common.util.impl.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,12 +12,15 @@ import org.springframework.data.redis.connection.RedisPassword;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisClientConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
-import com.springboot.demo.base.utils.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-import java.time.Duration;
+import com.springboot.demo.base.utils.FastJson2JsonRedisSerializer;
+import com.springboot.demo.base.utils.RedisTemplate;
+import com.springboot.demo.base.utils.RedisUtil;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @ClassName: RedisConfig
@@ -29,6 +32,8 @@ import java.time.Duration;
 @PropertySource("classpath:redis.properties")
 @Slf4j
 public class RedisConfig {
+	
+	private org.jboss.logging.Logger log = LoggerFactory.logger(RedisConfig.class);
 
     @Value("${redis.hostName}")
     private String hostName;
@@ -80,7 +85,7 @@ public class RedisConfig {
         redisStandaloneConfiguration.setPort(port);
         //由于我们使用了动态配置库,所以此处省略
         //redisStandaloneConfiguration.setDatabase(database);
-        redisStandaloneConfiguration.setPassword(RedisPassword.of(password));
+        //redisStandaloneConfiguration.setPassword(RedisPassword.of(password));
         JedisClientConfiguration.JedisClientConfigurationBuilder jedisClientConfiguration = JedisClientConfiguration.builder();
         jedisClientConfiguration.connectTimeout(Duration.ofMillis(timeout));
         JedisConnectionFactory factory = new JedisConnectionFactory(redisStandaloneConfiguration,
